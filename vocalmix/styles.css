@@ -1,0 +1,190 @@
+/* ============================================================
+   VocalMix Studio v2 – styles.css
+   ============================================================ */
+
+:root {
+  --bg:       #080810;
+  --bg2:      #0f0f1a;
+  --card:     #12121e;
+  --hover:    #18182c;
+  --b:        #1c1c32;
+  --b2:       #28284a;
+  --text:     #e2e8f0;
+  --dim:      #94a3b8;
+  --muted:    #4a5568;
+  --ap:       #a855f7;
+  --ab:       #3b82f6;
+  --ok:       #10b981;
+  --warn:     #f59e0b;
+  --danger:   #ef4444;
+  --grad:     linear-gradient(135deg,#a855f7,#3b82f6);
+  --r:        10px;
+  --rs:       6px;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;font-size:13px;background:var(--bg);color:var(--text);overflow:hidden}
+
+.app{display:grid;grid-template-rows:52px 1fr 60px;height:100vh}
+
+/* ─ Header ─ */
+.header{display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:var(--bg2);border-bottom:1px solid var(--b);flex-shrink:0}
+.header-left{display:flex;align-items:center;gap:12px}
+.back-link{display:flex;align-items:center;color:var(--muted);text-decoration:none;transition:color .2s;padding:4px}
+.back-link:hover{color:var(--dim)}
+.back-link svg{width:18px;height:18px}
+.logo{display:flex;align-items:center;gap:8px}
+.logo-icon{width:26px;height:26px}
+.logo-text{font-size:16px;font-weight:700;letter-spacing:-.5px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.logo-sub{opacity:.7}
+.header-status{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:12px}
+.status-dot{width:7px;height:7px;border-radius:50%;background:var(--muted);transition:background .3s}
+.status-dot.active{background:var(--ok);box-shadow:0 0 5px var(--ok)}
+.status-dot.busy{background:var(--warn);animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ─ Main ─ */
+.main{overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:14px}
+.main::-webkit-scrollbar{width:5px}
+.main::-webkit-scrollbar-track{background:transparent}
+.main::-webkit-scrollbar-thumb{background:var(--b2);border-radius:3px}
+
+/* ─ Section ─ */
+.section-label{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.s-badge{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-size:9px;letter-spacing:.5px}
+
+/* ─ Tracks Grid ─ */
+.tracks-grid{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start}
+.track-card{background:var(--card);border:1px solid var(--b);border-radius:var(--r);padding:12px;min-width:210px;flex:1 1 210px;transition:border-color .2s}
+.track-card:hover{border-color:var(--b2)}
+.track-head{display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.tbadge{font-size:9px;font-weight:700;letter-spacing:.8px;padding:2px 7px;border-radius:4px;color:#fff;flex-shrink:0}
+.tbadge-oke{background:#1d4ed8}
+.tbadge-main{background:#7c3aed}
+.tbadge-harm{background:#db2777}
+.tname{font-size:12px;color:var(--dim);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tdur{font-size:10px;color:var(--muted);font-family:monospace}
+
+/* ─ Harmony Card ─ */
+.harmony-card{position:relative}
+.harm-remove{position:absolute;top:8px;right:8px;width:20px;height:20px;border-radius:50%;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:var(--danger);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;transition:background .2s}
+.harm-remove:hover{background:rgba(239,68,68,.3)}
+
+.harmony-container{display:contents}
+
+.add-harmony-card{display:flex;align-items:center;justify-content:center;min-width:160px;flex:0 0 160px;height:auto;min-height:120px}
+.btn-add-harmony{display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 20px;border:2px dashed var(--b2);border-radius:var(--r);color:var(--muted);font-size:12px;font-family:inherit;background:transparent;cursor:pointer;transition:border-color .2s,color .2s;width:100%;height:100%}
+.btn-add-harmony:hover{border-color:var(--ap);color:var(--ap)}
+.btn-add-harmony svg{width:24px;height:24px}
+
+/* ─ Drop Zone ─ */
+.dropzone{border:2px dashed var(--b2);border-radius:var(--rs);height:80px;position:relative;cursor:pointer;transition:border-color .2s,background .2s;margin-bottom:8px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.dropzone:hover{border-color:var(--ap);background:rgba(168,85,247,.04)}
+.dropzone.dragover{border-color:var(--ap);background:rgba(168,85,247,.1)}
+.dropzone.loaded{border-style:solid;border-color:var(--ok);background:rgba(16,185,129,.05)}
+.finput{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.dz-inner{display:flex;flex-direction:column;align-items:center;gap:3px;pointer-events:none}
+.dz-icon{font-size:20px;color:var(--muted)}
+.dz-text{font-size:11px;color:var(--dim)}
+.dz-hint{font-size:10px;color:var(--muted)}
+.dz-loaded{display:flex!important;align-items:center;gap:8px;padding:8px;pointer-events:none;width:100%;justify-content:center}
+.dz-check{color:var(--ok);font-size:18px}
+.dz-fname{font-size:11px;color:var(--ok);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px}
+
+/* ─ Sliders ─ */
+.slider-row,.pr{display:grid;grid-template-columns:80px 1fr 52px;align-items:center;gap:7px;margin-bottom:5px}
+.slider-row label,.pr label{font-size:11px;color:var(--muted)}
+.slv{font-size:11px;color:var(--dim);text-align:right;font-family:monospace}
+.sl{-webkit-appearance:none;appearance:none;height:4px;border-radius:2px;background:var(--b2);outline:none;cursor:pointer;width:100%}
+.sl::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--ap);cursor:pointer;box-shadow:0 0 5px rgba(168,85,247,.5);transition:transform .15s}
+.sl::-webkit-slider-thumb:hover{transform:scale(1.25)}
+.sc{background:linear-gradient(to right,var(--b2) 0%,var(--b2) 50%,var(--b2) 100%)}
+
+/* ─ Timeline ─ */
+.timeline-wrap{display:flex;gap:8px}
+.tl-labels{display:flex;flex-direction:column;width:36px;flex-shrink:0;padding-top:2px}
+.tl-lbl{font-size:9px;font-weight:700;color:var(--muted);text-align:right;padding:2px 0;letter-spacing:.5px}
+.tl-canvas-wrap{flex:1;position:relative;height:120px;background:var(--bg2);border-radius:var(--rs);overflow:hidden;cursor:pointer;border:1px solid var(--b)}
+#tl-canvas{width:100%;height:100%;display:block}
+.playhead{position:absolute;top:0;bottom:0;width:2px;background:var(--ap);left:0;box-shadow:0 0 6px var(--ap);pointer-events:none}
+
+/* ─ Analysis ─ */
+.analysis-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-bottom:10px}
+.an-card{background:var(--bg2);border:1px solid var(--b);border-radius:var(--rs);padding:12px}
+.an-title{font-size:11px;font-weight:600;color:var(--dim);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--b)}
+.an-rows{display:flex;flex-direction:column;gap:5px}
+.an-row{display:flex;justify-content:space-between;align-items:center}
+.an-k{font-size:11px;color:var(--muted)}
+.an-v{font-size:11px;font-weight:600;color:var(--ap);font-family:monospace}
+
+/* ─ Mix Tabs ─ */
+.mix-tabs{display:flex;gap:6px;margin-left:auto}
+.mix-tab{padding:4px 14px;border-radius:20px;border:1px solid var(--b2);background:transparent;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s}
+.mix-tab.active{background:var(--grad);color:#fff;border-color:transparent;box-shadow:0 0 12px rgba(168,85,247,.3)}
+.mix-tab:not(.active):hover{color:var(--dim);border-color:var(--b2)}
+
+/* ─ Mix Panels ─ */
+.mix-panel-group{}
+.mix-panels{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:1100px){.mix-panels{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:680px){.mix-panels{grid-template-columns:1fr}}
+.mix-panel{background:var(--bg2);border:1px solid var(--b);border-radius:var(--rs);padding:12px}
+.mix-panel-3d{border-color:rgba(168,85,247,.25);background:rgba(168,85,247,.04)}
+.mp-title{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--dim);margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid var(--b)}
+.mp-icon{width:13px;height:13px;color:var(--ap)}
+.panel-note{font-size:10px;color:var(--muted);margin-bottom:10px;line-height:1.5}
+
+.eq-curve{width:100%;height:55px;margin-top:8px;border-radius:4px;background:rgba(0,0,0,.3);display:block}
+
+/* ─ Transport ─ */
+.transport{display:flex;align-items:center;gap:12px;padding:0 14px;background:var(--bg2);border-top:1px solid var(--b);flex-shrink:0}
+.tr-btns{display:flex;gap:7px;flex-shrink:0}
+.tr-progress{display:flex;align-items:center;gap:8px;flex:1;min-width:0}
+.tr-progress span{font-family:monospace;font-size:11px;color:var(--dim);flex-shrink:0}
+.pb-wrap{flex:1;cursor:pointer}
+.pb-bg{height:4px;background:var(--b2);border-radius:2px;overflow:hidden}
+.pb-fill{height:100%;background:var(--grad);width:0%;transition:width .1s linear}
+.tr-meters{display:flex;align-items:center;gap:4px;flex-shrink:0}
+.ml{font-size:10px;color:var(--muted);font-weight:700}
+.meter{width:55px;height:7px;background:var(--b2);border-radius:4px;overflow:hidden}
+.meter-bar{height:100%;width:0%;border-radius:4px;background:linear-gradient(to right,var(--ok),var(--warn),var(--danger));transition:width .05s}
+
+/* ─ Buttons ─ */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;border-radius:var(--rs);border:1px solid transparent;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;transition:opacity .2s,transform .1s;outline:none;font-family:inherit}
+.btn svg{width:13px;height:13px}
+.btn:disabled{opacity:.3;cursor:not-allowed}
+.btn:not(:disabled):hover{opacity:.88}
+.btn:not(:disabled):active{transform:scale(.97)}
+.btn-primary{background:var(--grad);color:#fff;box-shadow:0 0 12px rgba(168,85,247,.3)}
+.btn-ghost{background:var(--hover);color:var(--dim);border-color:var(--b2)}
+.btn-accent{background:linear-gradient(135deg,#059669,#0284c7);color:#fff;box-shadow:0 0 12px rgba(5,150,105,.25)}
+.btn-sm{padding:4px 10px;font-size:11px;margin-top:8px}
+
+/* ─ Global Drop Overlay ─ */
+.gdo{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:32px}
+.gdo-title{font-size:22px;font-weight:700;color:var(--text)}
+.gdo-zones{display:flex;gap:20px}
+.gdo-zone{width:180px;height:160px;border:2px dashed var(--b2);border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;cursor:pointer;transition:border-color .2s,background .2s,transform .2s}
+.gdo-zone:hover,.gdo-zone.dragover{border-color:var(--ap);background:rgba(168,85,247,.12);transform:scale(1.04)}
+.gdo-z-icon{font-size:36px}
+.gdo-z-label{font-size:13px;font-weight:600;color:var(--dim);text-align:center;line-height:1.5}
+.gdo-z-label small{font-size:11px;color:var(--muted)}
+.gdo-cancel{font-size:12px;color:var(--muted);cursor:pointer;border-bottom:1px dashed var(--muted)}
+.gdo-cancel:hover{color:var(--dim)}
+
+/* ─ Modal ─ */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:1000;display:flex;align-items:center;justify-content:center}
+.modal{background:var(--card);border:1px solid var(--b2);border-radius:16px;padding:26px;width:380px;box-shadow:0 10px 40px rgba(0,0,0,.6)}
+.modal-title{font-size:16px;font-weight:700;margin-bottom:18px}
+.modal-body{display:flex;flex-direction:column;gap:12px}
+.mr{display:grid;grid-template-columns:120px 1fr;align-items:center;gap:12px}
+.mr label{font-size:12px;color:var(--dim)}
+.sel{background:var(--bg2);border:1px solid var(--b2);border-radius:var(--rs);color:var(--text);padding:6px 10px;font-size:12px;outline:none;cursor:pointer;width:100%}
+.modal-foot{display:flex;gap:8px;margin-top:20px;justify-content:flex-end}
+.exp-prog{margin-top:10px}
+.exp-status{font-size:12px;color:var(--dim);margin-bottom:7px}
+
+/* ─ Scrollbar ─ */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--b2);border-radius:3px}

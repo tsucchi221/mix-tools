@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ピッチコレクター – Mix Tools</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+
+  <header class="header">
+    <div class="header-left">
+      <a href="../index.html" class="back-link" title="ポータルへ">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 4l-6 6 6 6"/></svg>
+      </a>
+      <div class="logo">
+        <svg class="logo-icon" viewBox="0 0 32 32" fill="none">
+          <circle cx="16" cy="16" r="15" stroke="url(#hg)" stroke-width="2"/>
+          <path d="M8 24 L16 8 L24 24" stroke="url(#hg)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="11" y1="19" x2="21" y2="19" stroke="url(#hg)" stroke-width="2" stroke-linecap="round"/>
+          <defs>
+            <linearGradient id="hg" x1="0" y1="0" x2="32" y2="32">
+              <stop stop-color="#10b981"/><stop offset="1" stop-color="#3b82f6"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <span class="logo-text">ピッチ<span class="logo-sub">コレクター</span></span>
+      </div>
+    </div>
+    <div class="header-status">
+      <span class="status-dot" id="status-dot"></span>
+      <span id="status-text">ファイルをロードしてください</span>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- Drop Zone -->
+    <section class="section">
+      <div class="section-label">音声ファイル</div>
+      <div class="dropzone" id="dropzone">
+        <input type="file" class="finput" id="file-input" accept="audio/*">
+        <div class="dz-inner" id="dz-inner">
+          <svg class="dz-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M24 4a8 8 0 0 0-8 8v13a8 8 0 0 0 16 0V12a8 8 0 0 0-8-8z"/>
+            <path d="M36 22v3a12 12 0 0 1-24 0v-3M24 37v7M18 44h12"/>
+          </svg>
+          <p class="dz-text">クリックまたはドラッグ＆ドロップ</p>
+          <p class="dz-hint">MP3 / WAV / OGG / FLAC 対応</p>
+        </div>
+        <div class="dz-loaded" id="dz-loaded" style="display:none">
+          <span class="dz-check">✓</span>
+          <div>
+            <div class="dz-fname" id="dz-fname"></div>
+            <div class="dz-meta" id="dz-meta"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Visualizer -->
+    <section class="section" id="viz-section" style="display:none">
+      <div class="section-label">
+        ピッチ解析
+        <span class="s-badge" id="key-detected"></span>
+      </div>
+      <div class="viz-wrap">
+        <canvas id="pitch-canvas" class="pitch-canvas"></canvas>
+        <div class="pitch-legend">
+          <span class="leg-item"><span class="leg-dot" style="background:#10b981"></span>±30セント以内</span>
+          <span class="leg-item"><span class="leg-dot" style="background:#f59e0b"></span>±50セント</span>
+          <span class="leg-item"><span class="leg-dot" style="background:#ef4444"></span>それ以上</span>
+          <span class="leg-item"><span class="leg-dot" style="background:#3b82f6"></span>補正後</span>
+        </div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-label">検出された平均音高</div>
+          <div class="stat-val" id="stat-avg">-</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">推定キー</div>
+          <div class="stat-val" id="stat-key">-</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">チューニング偏差</div>
+          <div class="stat-val" id="stat-tune">-</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">推奨補正量</div>
+          <div class="stat-val" id="stat-rec">-</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Controls -->
+    <section class="section" id="controls-section" style="display:none">
+      <div class="section-label">補正設定</div>
+      <div class="controls-grid">
+
+        <div class="ctrl-panel">
+          <div class="cp-title">ピッチシフト</div>
+          <div class="pitch-shift-display" id="shift-display">0</div>
+          <div class="pitch-shift-unit">半音</div>
+          <input type="range" class="sl big-slider" id="shift-slider" min="-12" max="12" value="0" step="0.5">
+          <div class="shift-marks">
+            <span>-12</span><span>-6</span><span>0</span><span>+6</span><span>+12</span>
+          </div>
+          <div class="auto-row">
+            <button class="btn btn-ghost btn-sm" id="btn-reset">リセット</button>
+            <button class="btn btn-accent btn-sm" id="btn-auto-correct">自動補正を適用</button>
+          </div>
+        </div>
+
+        <div class="ctrl-panel">
+          <div class="cp-title">キー・スケール設定</div>
+          <div class="pr">
+            <label>キー</label>
+            <select class="sel" id="sel-key">
+              <option value="0">C</option><option value="1">C#/D♭</option>
+              <option value="2">D</option><option value="3">D#/E♭</option>
+              <option value="4">E</option><option value="5">F</option>
+              <option value="6">F#/G♭</option><option value="7">G</option>
+              <option value="8">G#/A♭</option><option value="9">A</option>
+              <option value="10">A#/B♭</option><option value="11">B</option>
+            </select>
+          </div>
+          <div class="pr">
+            <label>スケール</label>
+            <select class="sel" id="sel-scale">
+              <option value="major">メジャー</option>
+              <option value="minor">マイナー</option>
+              <option value="chromatic">クロマチック</option>
+              <option value="pentatonic">ペンタトニック</option>
+            </select>
+          </div>
+          <div class="pr">
+            <label>補正強度</label>
+            <input type="range" class="sl" id="strength-slider" min="0" max="100" value="80">
+            <span class="slv" id="strength-val">80%</span>
+          </div>
+          <div class="pr" style="margin-top:4px">
+            <label>基準音高</label>
+            <select class="sel" id="sel-ref">
+              <option value="440">A = 440 Hz（標準）</option>
+              <option value="432">A = 432 Hz</option>
+              <option value="443">A = 443 Hz</option>
+              <option value="445">A = 445 Hz</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="ctrl-panel">
+          <div class="cp-title">フォルマント補正</div>
+          <div class="pr">
+            <label>フォルマント</label>
+            <input type="range" class="sl sc" id="formant-slider" min="-100" max="100" value="0">
+            <span class="slv" id="formant-val">0</span>
+          </div>
+          <p class="cp-note">ピッチシフト時の声質変化を補正します。<br>+(プラス)で男声→女声方向、-(マイナス)で逆方向。</p>
+          <div class="cp-title" style="margin-top:12px">スムージング</div>
+          <div class="pr">
+            <label>補正速度</label>
+            <input type="range" class="sl" id="smooth-slider" min="1" max="10" value="5">
+            <span class="slv" id="smooth-val">5</span>
+          </div>
+          <p class="cp-note">値が小さいほどロボット声、大きいほど自然な補正。</p>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Transport -->
+  <footer class="transport">
+    <div class="tr-btns">
+      <button class="btn btn-ghost" id="btn-analyze" disabled>&#128269; 解析</button>
+      <button class="btn btn-primary" id="btn-play" disabled>&#9654; 再生</button>
+      <button class="btn btn-ghost" id="btn-stop" disabled>&#9632; 停止</button>
+      <button class="btn btn-accent" id="btn-export" disabled>&#8659; WAV出力</button>
+    </div>
+    <div class="tr-progress">
+      <span id="tc">0:00</span>
+      <div class="pb-wrap" id="pb-wrap">
+        <div class="pb-bg"><div class="pb-fill" id="pb-fill"></div></div>
+      </div>
+      <span id="tt">0:00</span>
+    </div>
+    <div class="tr-mode">
+      <label class="toggle-label">
+        <input type="checkbox" id="toggle-corrected" checked>
+        <span class="toggle-track"></span>
+        <span class="toggle-text">補正あり</span>
+      </label>
+    </div>
+  </footer>
+
+</div>
+
+<!-- Global drop overlay -->
+<div class="gdo" id="gdo" style="display:none">
+  <div class="gdo-inner">
+    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" style="width:48px;height:48px;color:#10b981">
+      <path d="M24 4a8 8 0 0 0-8 8v13a8 8 0 0 0 16 0V12a8 8 0 0 0-8-8z"/>
+    </svg>
+    <p>ここにドロップ</p>
+  </div>
+</div>
+
+<!-- Export Modal -->
+<div class="modal-bg" id="modal-bg" style="display:none">
+  <div class="modal">
+    <div class="modal-title">WAV エクスポート</div>
+    <div class="modal-body">
+      <div class="mr"><label>サンプルレート</label>
+        <select class="sel" id="exp-sr">
+          <option value="44100">44.1 kHz</option>
+          <option value="48000">48 kHz</option>
+        </select>
+      </div>
+      <div class="mr"><label>適用する補正</label>
+        <select class="sel" id="exp-mode">
+          <option value="shift">ピッチシフトのみ</option>
+          <option value="auto">自動補正（スケールスナップ）</option>
+        </select>
+      </div>
+      <div class="exp-prog" id="exp-prog" style="display:none">
+        <p class="exp-status" id="exp-status">処理中...</p>
+        <div class="pb-bg"><div class="pb-fill" id="exp-fill" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-accent" id="modal-start">エクスポート開始</button>
+      <button class="btn btn-ghost" id="modal-cancel">キャンセル</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
